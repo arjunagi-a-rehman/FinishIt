@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register and Login form</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    $(document).ready(function () {
+    // Register form submission
+    $(".Registert button").click(function () {
+        var name = $("#name").val();
+        var email = $("#email").val();
+        var password = $("#password").val();
+        var c_password = $("#C_password").val();
+
+        // Perform AJAX request to Flask backend
+        $.ajax({
+            type: "POST",
+            url: "/register",  // Flask route for registration
+            data: {
+                name: name,
+                email: email,
+                password: password,
+                C_password: c_password
+            },
+            success: function (response) {
+                // Redirect to the registration page
+                alert(response['message']);
+                if(response['status']){
+                    $("#check").prop("checked", true)
+                }
+            }
+        });
+    });
+
+    // Login form submission
+    $(".Login button").click(function () {
+        var email = $("#lemail").val();
+        var password = $("#lpassword").val();
+
+        // Perform AJAX request to Flask backend
+        $.ajax({
+            type: "POST",
+            url: "/login",  // Flask route for login
+            data: {
+                email: email,
+                password: password
+            },
+            success: function (response) {
+                if(response["status"]){
+                    window.location.replace("/") 
+                } // Show response from the server
+                else{
+                    alert("wrong credentials")
+                }
+            }
+        });
+    });
+
+    // Check for flash messages and display them
+    var flashContainer = $("#flash-container");
+    if (flashContainer.length > 0) {
+        // Display the flash messages
+        var messages = flashContainer.data("messages");
+        if (messages) {
+            for (var i = 0; i < messages.length; i++) {
+                var message = messages[i];
+                alert(message);
+            }
+        }
+    }
+
+    function displayFlashMessage(message) {
+        // Assuming that the message structure includes 'message' and 'category'
+        alert(message);
+
+        // Hide the flash message after a certain time
+        setTimeout(function () {
+            flashElement.fadeOut('slow', function () {
+                $(this).remove();
+            });
+        }, 3000);
+    }
+});
+
+</script>
+
+</head>
+<body>
+    
+    <div class="main">
+        <input type="checkbox" id="check" aria-hidden="true">
+        <div class="Registert">
+            <label for="check" aria-hidden="true">Register</label>
+            <input type="text" name="name" id="name" placeholder="Eneter Your name" autocomplete="off" required>
+            <input type="email" name="email" id="email" placeholder="Eneter Your email" autocomplete="off" required>
+            <input type="password" name="password" id="password" placeholder="Eneter Your password" autocomplete="off" required>
+            <input type="password" name="C_password" id="C_password" placeholder="Confirm Your password" autocomplete="off" required>
+            <button>Register</button>
+        </div>
+        <div class="Login">
+            <label for="check" aria-hidden="true">Login</label>
+            <input type="email" name="email" id="lemail" placeholder="Eneter Your email" autocomplete="off" required>
+            <input type="password" name="password" id="lpassword" placeholder="Eneter Your password" autocomplete="off" required>
+            <button>Login</button>
+        </div>
+        
+    </div>
+    
+</body>
+</html>

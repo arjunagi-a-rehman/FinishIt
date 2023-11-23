@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% block title %}
+    Tables
+{% endblock %}
+
+
+{% block content %}
+<body>
+   
+    <div class="container-fluid bg-dark">
+        <div class="container-fluid p-5 bg-success text-white text-center bg-dark">
+            <h1>Tables</h1>
+        </div>
+
+        <div class="row bg-dark">
+            {% for table in tables %}
+            <div class="col-md-4 bg-dark"> <!-- Each card will take 4 columns in medium-sized screens and larger -->
+                <div class="card m-1">
+                    <div class="card-body bg-dark text-white">
+                        <h4 class="card-title">{{table.title}}</h4>
+                        <p class="card-text">{{table.description}}</p>
+                        <div class="d-flex  align-items-center">
+                            <a href="/todos/{{ table.id }}" class="card-link btn btn-primary btn-sm m-1">Table</a>
+                            <form action="/table/delete/{{ table.id }}" method="POST">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button type="submit" class="btn btn-danger btn-sm m-1">Delete</button>
+                            </form>
+                            <button type="button" class="btn btn-info btn-sm text-white" data-bs-toggle="modal" data-bs-target="#editModal{{ table.id }}">
+                                Edit
+                            </button>
+                            <!-- Edit Todo Modal -->
+                            <div class="modal fade" id="editModal{{ table.id }}" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title text-black" id="editModalLabel">Edit</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body text-black">
+                                            <form action="/table/update" method="POST" class="ajax-form">
+                                                <input type="hidden" name="id" value="{{ table.id }}">
+                                                <div class="mb-3">
+                                                    <label for="editTitle" class="form-label">Title</label>
+                                                    <input type="text" class="form-control" id="editTitle" name="title" value="{{ table.title }}" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="editDescription" class="form-label">Description</label>
+                                                    <input type="text" class="form-control" id="editDescription" name="description" value="{{ table.description }}" required>
+                                                </div>
+                                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                            </form>                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-success m-1 btn-sm btn-sm text-white" data-bs-toggle="modal" data-bs-target="#shareModal{{ table.id }}">
+                                Share
+                            </button>
+                            <!-- Edit Todo Modal -->
+                            <div class="modal fade" id="shareModal{{ table.id }}" tabindex="-1" aria-labelledby="shareModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="share">Share</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="/table/share" method="POST" class="ajax-form">
+                                                <input type="hidden" name="id" value="{{ table.id }}">
+                                                <div class="mb-3">
+                                                    <label for="editTitle" class="form-label">Email</label>
+                                                    <input type="text" class="form-control" id="editTitle" name="email" value="email" required>
+                                                </div>
+                                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                            </form>                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <button type="button" class="btn btn-primary m-1" data-bs-toggle="modal" data-bs-target="#posttodo">
+            Add table
+        </button>
+
+        <div class="modal fade" id="posttodo" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title text-black" id="editModalLabel">Add Todo Table</h5>
+                        <button type="button" class="btn-close text-primary" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="/table" method="POST" class="ajax-form text-black">
+                            <div class="mb-3">
+                                <label for="editTitle" class="form-label">Title</label>
+                                <input type="text" class="form-control" id="editTitle" name="title" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editDescription" class="form-label text-black">Description</label>
+                                <input type="text" class="form-control" id="editDescription" name="description"
+                                    required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+{% endblock %}
+

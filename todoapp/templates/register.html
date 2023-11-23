@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}
+    Register Page
+{% endblock %}
+
+{% block content %}
+<body>
+    <div class="container col-md-4 h-100">
+        <form method="POST" class="form-register" style="color:white; max-width: 400px; margin: auto;">
+            {{ form.hidden_tag() }}
+            <div class="container text-center justify-content-center">
+                <img class="mb-0" src="{{ url_for('static', filename='todo_logo.png') }}" alt="" width="84" height="84">
+                <h1 class="h3 mb-3 font-weight-normal">
+                    Please Register
+                </h1>
+            </div>
+
+            <div class="form-group text-left">
+                {{ form.username.label(class="form-label") }}
+                {{ form.username(class="form-control", placeholder="User Name") }}
+            </div>
+
+            <div class="form-group text-left">
+                {{ form.email_address.label(class="form-label") }}
+                {{ form.email_address(class="form-control", placeholder="Email Address") }}
+            </div>
+
+            <div class="form-group text-left">
+                {{ form.password1.label(class="form-label") }}
+                {{ form.password1(class="form-control", placeholder="Password") }}
+            </div>
+
+            <div class="form-group text-left">
+                {{ form.password2.label(class="form-label") }}
+                {{ form.password2(class="form-control", placeholder="Confirm Password") }}
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mt-3">
+                <div class="checkbox d-flex ">
+                    <h6>Already have an account?</h6>
+                </div>
+                <a class="btn btn-sm btn-secondary m-1" href="{{ url_for('user_login') }}">Login</a>
+            </div>
+            <div class="container text-center justify-content-center">
+                {{ form.submit(class="btn btn btn-block btn-primary m-2") }}
+            </div>
+        </form>
+    </div>
+</body>
+{% endblock %}

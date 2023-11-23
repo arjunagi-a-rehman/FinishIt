@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% block title %}
+    Tables
+{% endblock %}
+
+
+{% block content %}
+<body>
+    <div class="container-fluid p-5 bg-success text-white text-center bg-dark">
+        <h1>{{table_name}}</h1>
+    </div>
+    <div class="container mt-3">
+        <table class="table table-striped" data-bs-theme="dark">
+            <thead>
+                <tr>
+                  <th>title</th>
+                  <th>description</th>
+                  <th>target date</th>
+                  <th>status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for todo in todos["todos"] %}
+                <tr>
+                    <td>{{ todo.name }}</td>
+                    <td>{{ todo.description }}</td>
+                    <td>{{todo.target_date}}</td>
+                    <td>
+                        <form action="/todo/status/{{ todo.id }}" method="POST" class="d-inline">
+                            <input type="hidden" name="_method" value="PUT">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    {{ todo.status.value }}
+                                </button>
+                                <div class="dropdown-menu">
+                                    <button class="dropdown-item" type="submit" name="status" value="pending">Pending</button>
+                                    <button class="dropdown-item" type="submit" name="status" value="inprogress">In Progress</button>
+                                    <button class="dropdown-item" type="submit" name="status" value="done">Done</button>
+                                    <button class="dropdown-item" type="submit" name="status" value="delayed">Delayed</button>
+                                </div>
+                            </div>                            
+                        </form>
+                    </td>
+                    <td>
+                        <div class="btn-group" role="group" aria-label="Button group">
+                            <form action="/todo/{{ todo.id }}" method="POST">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                            </form>
+                        </div>
+                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editModal{{ todo.id }}">
+                                Edit
+                            </button>
+                            <!-- Edit Todo Modal -->
+                            <div class="modal fade" id="editModal{{ todo.id }}" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="editModalLabel">Edit Todo</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="/todo/update" method="POST" class="ajax-form">
+                                                <input type="hidden" name="id" value="{{ todo.id }}">
+                                                <div class="mb-3">
+                                                    <label for="editTitle" class="form-label">Title</label>
+                                                    <input type="text" class="form-control" id="editTitle" name="title" value="{{ todo.name }}" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="editDescription" class="form-label">Description</label>
+                                                    <input type="text" class="form-control" id="editDescription" name="description" value="{{ todo.description }}" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="target_date" class="form-label">Description</label>
+                                                    <input type="date" class="form-control" id="target_date" name="target_date" required>
+                                                </div>
+                                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                            </form>                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#posttodo">
+            Add Todo
+        </button>
+        
+        <div class="modal fade" id="posttodo" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content bg-dark">
+                    <div class="modal-header">
+                        <h5 class="modal-title " id="editModalLabel">Add Todo</h5>
+                        <button type="button" class="btn-close text-primary" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="/todo" method="POST" class="ajax-form ">
+                            <div class="mb-3">
+                                <label for="editTitle" class="form-label">Title</label>
+                                <input type="text" class="form-control" id="editTitle" name="title" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editDescription" class="form-label">Description</label>
+                                <input type="text" class="form-control" id="editDescription" name="description" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="target_date" class="form-label">Description</label>
+                                <input type="date" class="form-control" id="target_date" name="target_date" required>
+                            </div>
+                            <input type="hidden" name="table_id" value="{{ todos['table_id'] }}">
+                            <button type="submit" class="btn btn-primary">Save </button>
+                        </form>                                            
+                    </div>
+                </div>
+            </div>
+        </div>    
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+{% endblock %}
