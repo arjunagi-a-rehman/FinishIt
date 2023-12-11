@@ -1,8 +1,7 @@
 from todoapp.repository.data import getAllTodo,save,get_by_id,delete
 from todoapp.models.todo import Todo,TodoStatus
 from todoapp.models.user import Users
-
-
+from datetime import date,timedelta,datetime
 def getAll():
     return getAllTodo()
 
@@ -51,4 +50,16 @@ def get_verified_user(email,password):
         return user
     return None
 
+def update_status_time(todo1):
+    if(todo1 is None):
+        return None
+    if todo1.target_date and date.today() > todo1.target_date:
+            todo1.status = TodoStatus.DELAYED
+    save(todo1)
 
+def get_all_next_day():
+    current_date = datetime.utcnow().date()
+    target_date = current_date + timedelta(days=1)
+    todos_one_day_from_current_date = Todo.query.filter_by(target_date=target_date).all()
+    return todos_one_day_from_current_date
+    

@@ -3,8 +3,13 @@ from todoapp.services.todoServices import getAll ,save_todo, updater_status,upda
 from flask import request,render_template,url_for,redirect,flash
 from flask_login import login_user, logout_user, login_required,current_user
 from todoapp.services.table_services import *
+from todoapp.services.mail_service import *
 from todoapp.forms.forms import *
+import asyncio
+from concurrent.futures import ThreadPoolExecutor
+import threading
 
+executor = ThreadPoolExecutor()
 @app.route('/')
 @app.route('/tables')
 @login_required
@@ -32,7 +37,7 @@ def update_table_api():
 def add_user_to_table():
     table_id = request.form.get('id')
     email = request.form.get('email')
-    add_user(table_id,email)
+    add_user(table_id,email,current_user)
     return redirect(url_for('render_tables'))
 
 @app.route('/todos/<int:id>')
@@ -76,14 +81,20 @@ def delete_todo_api(id):
     return redirect(url_for('renderindex',id=table_id))
 
 @app.route('/register',methods=['POST','GET'])
-def register_user():
+async def register_user():
     form = RegisterForm()
     if form.validate_on_submit():
+        email=form.email_address.data
         register_user_service(name=form.username.data,
                               email=form.email_address.data,
                               password=form.password1.data)
         flash(f"Account created successfully!", category='success')
-        return redirect(url_for('login_page'))
+        thread = threading.Thread(
+            target=send_mail,
+            args=("Welcome", "your_email@example.com", [email], "Thanks for joining finish it")
+        )
+        thread.start()        
+        return redirect(url_for('user_login'))
     if form.errors != {}: #If there are not errors from the validations
         for err_msg in form.errors.values():
             flash(f'There was an error with creating a user: {err_msg}', category='danger')
@@ -109,6 +120,9 @@ def user_login():
 def logout_page():
     logout_user()
     return redirect(url_for("user_login"))
+
+
+    
 
     
 
